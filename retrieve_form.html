@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retrieve Form</title>
+</head>
+<body>
+    <h1>Retrieve Form</h1>
+    <form id="retrieveForm">
+        <label for="customerName">Customer Name:</label>
+        <input type="text" name="customerName" required>
+        <br>
+
+        <button type="button" onclick="retrieveForm()">Retrieve Form</button>
+    </form>
+
+    <div id="formDetails"></div>
+
+    <script>
+        function retrieveForm() {
+            // Get customer name
+            const customerName = document.querySelector('input[name="customerName"]').value;
+
+            // Fetch form details from PHP
+            fetch(`retrieve_form.php?customerName=${customerName}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        document.getElementById('formDetails').innerText = `Error: ${data.error}`;
+                    } else {
+                        document.getElementById('formDetails').innerHTML = data.formDetails;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+</body>
+</html>

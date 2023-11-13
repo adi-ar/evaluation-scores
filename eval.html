@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Assessment Form</title>
+</head>
+<body>
+    <h1>Health Assessment Form</h1>
+    <form id="healthForm">
+        <label for="customerName">Customer Name:</label>
+        <input type="text" name="customerName" required>
+        <br>
+
+        <label for="jointHyperlaxity">Joint Hyperlaxity:</label>
+        <input type="radio" name="jointHyperlaxity" value="0">0
+        <input type="radio" name="jointHyperlaxity" value="1">1
+        <input type="radio" name="jointHyperlaxity" value="2">2
+        <input type="radio" name="jointHyperlaxity" value="3">3
+        <input type="radio" name="jointHyperlaxity" value="4">4
+        <br>
+
+        <!-- Include other questions as before -->
+
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+
+    <p id="result"></p>
+
+    <script>
+        function submitForm() {
+            // Get customer name and answers
+            const customerName = document.querySelector('input[name="customerName"]').value;
+            const answers = [];
+            const radioButtons = document.querySelectorAll('input[type="radio"]:checked');
+            
+            radioButtons.forEach(button => {
+                answers.push({ name: button.name, value: button.value });
+            });
+
+            // Create a FormData object to send data to PHP
+            const formData = new FormData();
+            formData.append('customerName', customerName);
+            formData.append('answers', JSON.stringify(answers));
+
+            // Send data to PHP using fetch
+            fetch('submit_form.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = `Form submitted successfully. Form ID: ${data.formId}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
